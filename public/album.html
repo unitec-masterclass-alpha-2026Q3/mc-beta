@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Music Library</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Ccircle cx=%2720%27 cy=%2720%27 r=%2719%27 fill=%27%23315c42%27/%3E%3Ccircle cx=%2720%27 cy=%2720%27 r=%276%27 fill=%27%23e9c577%27/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/vendor/bootstrap.bundle.min.js"></script>
+    <script defer src="/js/common.js"></script>
+    <script defer src="/js/album.js"></script>
+  </head>
+  <body>
+    <a class="visually-hidden-focusable" href="#main">Skip to content</a>
+    <nav class="navbar border-bottom">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/"
+          ><span class="brand-disc" aria-hidden="true">●</span> Music Library</a
+        ><a class="nav-link active" href="/"
+          >Your collection <span aria-hidden="true">↗</span></a
+        >
+      </div>
+    </nav>
+    <main id="main" class="container py-4 py-md-5">
+      <div id="notice" aria-live="polite"></div>
+      <a href="/" class="back-link">← Back to albums</a>
+      <div id="albumState" class="mt-4" role="status"></div>
+      <div id="albumContent" hidden>
+        <section class="detail-hero my-4">
+          <div
+            id="detailCover"
+            class="album-cover detail-cover"
+            aria-hidden="true"
+          >
+            <div class="cover-record"></div>
+            <span class="cover-caption">MUSIC LIBRARY / LP</span>
+          </div>
+          <div>
+            <p class="eyebrow">FROM YOUR COLLECTION</p>
+            <h1 id="detailTitle"></h1>
+            <p id="detailArtist" class="fs-4 text-secondary"></p>
+            <span id="detailYear" class="badge year-badge"></span>
+            <div class="mt-4">
+              <button id="editAlbum" class="btn btn-outline-dark">
+                Edit album
+              </button>
+            </div>
+          </div>
+        </section>
+        <section class="mt-5" aria-labelledby="songsTitle">
+          <div
+            class="d-flex justify-content-between align-items-center mb-4 gap-3"
+          >
+            <div>
+              <p class="eyebrow mb-2">THE TRACKLIST</p>
+              <h2 id="songsTitle">
+                Songs <span id="songCount" class="count-badge">0</span>
+              </h2>
+            </div>
+            <button id="addSong" class="btn btn-primary">＋ Add song</button>
+          </div>
+          <div id="songsState" role="status"></div>
+          <div class="table-responsive">
+            <table id="songsTable" class="table align-middle" hidden>
+              <thead>
+                <tr>
+                  <th scope="col" class="track-col">#</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Duration</th>
+                  <th scope="col" class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="songsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer
+      class="container border-top py-4 d-flex justify-content-between gap-3"
+    >
+      <span>Music Library</span><span>A home for your favorite records.</span>
+    </footer>
+    <div
+      class="modal fade"
+      id="albumModal"
+      tabindex="-1"
+      aria-labelledby="albumModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="albumModalForm">
+            <div class="modal-header">
+              <h2 class="modal-title fs-4" id="albumModalTitle">Add album</h2>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div
+                class="form-error alert alert-danger d-none"
+                role="alert"
+              ></div>
+              <div class="mb-3">
+                <label class="form-label" for="albumTitle">Album title</label
+                ><input
+                  class="form-control"
+                  id="albumTitle"
+                  type="text"
+                  required
+                  maxlength="200"
+                  placeholder="e.g. Abbey Road"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="albumArtist">Artist</label
+                ><input
+                  class="form-control"
+                  id="albumArtist"
+                  type="text"
+                  required
+                  maxlength="200"
+                  placeholder="e.g. The Beatles"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="albumYear">Release year</label
+                ><input
+                  class="form-control"
+                  id="albumYear"
+                  type="number"
+                  required
+                  min="1900"
+                  max="2100"
+                  step="1"
+                  placeholder="1969"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                Cancel</button
+              ><button type="submit" class="btn btn-primary">Save album</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="deleteModal"
+      tabindex="-1"
+      aria-labelledby="deleteModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="deleteModalForm">
+            <div class="modal-header">
+              <h2 class="modal-title fs-4" id="deleteModalTitle">
+                Delete from your library?
+              </h2>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div
+                class="form-error alert alert-danger d-none"
+                role="alert"
+              ></div>
+              <p id="deleteMessage"></p>
+              <p id="deleteWarning" class="small text-secondary"></p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                Cancel</button
+              ><button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="songModal"
+      tabindex="-1"
+      aria-labelledby="songModalTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="songModalForm">
+            <div class="modal-header">
+              <h2 class="modal-title fs-4" id="songModalTitle">Add song</h2>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div
+                class="form-error alert alert-danger d-none"
+                role="alert"
+              ></div>
+              <div class="mb-3">
+                <label class="form-label" for="songTrack">Track number</label
+                ><input
+                  class="form-control"
+                  id="songTrack"
+                  type="number"
+                  required
+                  min="1"
+                  max="2147483647"
+                  step="1"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="songTitle">Song title</label
+                ><input
+                  class="form-control"
+                  id="songTitle"
+                  type="text"
+                  required
+                  maxlength="200"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="songDuration"
+                  >Duration (seconds)</label
+                ><input
+                  class="form-control"
+                  id="songDuration"
+                  type="number"
+                  required
+                  min="0"
+                  max="2147483647"
+                  step="1"
+                />
+              </div>
+              <p class="small text-secondary mb-0">
+                For example, 312 seconds will display as 5:12.
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-light"
+                data-bs-dismiss="modal"
+              >
+                Cancel</button
+              ><button type="submit" class="btn btn-primary">Save song</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
